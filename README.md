@@ -1,5 +1,6 @@
-# open-source-starter
-starter template for CZI open source projects
+# A large dataset of software mentions in the biomedical literature
+
+This code accompanies our release of data for software menions in biomedical literature
 
 ## Code of Conduct
 
