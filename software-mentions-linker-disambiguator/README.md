@@ -15,7 +15,6 @@ More detailed descriptions of each step are below. Instructions on how to run th
 - pypi Index: https://pypi.org/simple/
 - Bioconductor Index: https://www.bioconductor.org/packages/release/bioc/
 - CRAN Index: https://cran.r-project.org/web/packages/available_packages_by_name.html
-- libraries.io API: https://libraries.io/api
 - Github API: https://github.com
 - Scicrunch API: https://scicrunch.org/resources
 
@@ -69,7 +68,6 @@ Many scripts in this bundle require access keys.  You can get them for free from
 
     export GITHUB_USER = ...
     export GITHUB_TOKEN = ...
-    export LIBRARIES_API_KEY = ...
     export SCICRUNCH_TOKEN = ...
 
 Source this file as `. keys` or `source keys`
@@ -90,7 +88,6 @@ There are a number of command-line parameters that can be tuned, more info in th
 python bioconductor_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
 python cran_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
 python pypi_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
-python libraries_io_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
 python github_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
 python scicrunch_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
 ```
