@@ -1,5 +1,16 @@
 # Scripts for software extraction #
 
+## Introduction
+
+The scripts in this directory extract software mentions from NXML files downloaded from PMC OA files, [https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/). We assume that the user downloaded the files, and extracted the contents. Then there is a file system with two main directories, comm and non\_comm for the commercial use subset and the non commercial use only subset.  Each directory has subdurectories corresponding to the journals in the collection.  The subdirectories have NXML files, one per paper.
+
+You use software-mentions-extractor.py to extract the mentions. If needed, the result can be detokenized using detokenyzer.py auxillary script.
+
+The extractor is designed to work with GNU parallel command.  For example, suppose your working directory contains comm and non\_comm directories, then you can extract all mentions from the commercial subset using
+
+   ls -d comm/* | parallel -d ./software-mentions-extractor -o output/
+
+
 ## software-mentions-extractor.py ##
 
 Extracts mentions from papers
@@ -15,7 +26,7 @@ is the result of extraction of all files in the current directory.
 Each file is a tab separated list with the following fields:
 
 - Paper license (comm or non\_comm);
-- Paper location in the directory;
+- Paper location in the directory structure (see above);
 - Paper pmcid or empty;
 - Paper pmid or empty;
 - Paper doi or empty;
