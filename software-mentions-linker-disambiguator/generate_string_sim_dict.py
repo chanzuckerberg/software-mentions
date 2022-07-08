@@ -17,7 +17,7 @@ import ast
 import time
 import os
 
-ROOT_DIR = "/dbfs/FileStore/meta/user/aistrate/software_entity_linking/"
+ROOT_DIR = "data/"
 
 if __name__ == '__main__':
   string_sim_files = [filename for filename in os.listdir(ROOT_DIR) if filename.startswith("synonym_string_similarity_")]

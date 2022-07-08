@@ -13,7 +13,7 @@ import pandas as pd
 import pickle
 import argparse
 
-ROOT_DIR = "/dbfs/FileStore/meta/user/aistrate/software_entity_linking/"
+ROOT_DIR = "data/"
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()

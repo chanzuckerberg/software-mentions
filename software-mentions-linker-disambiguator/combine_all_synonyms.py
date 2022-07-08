@@ -33,7 +33,7 @@ import time
 import ast
 import argparse
 
-ROOT_DIR = "/dbfs/FileStore/meta/user/aistrate/software_entity_linking/"
+ROOT_DIR = "data/"
 
 def assign_confidences(df, synonym_map, synonym_source, conf = 1, use_confs = None):
   """

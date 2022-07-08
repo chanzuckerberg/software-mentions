@@ -17,7 +17,7 @@ import time
 import os
 import textdistance
 
-ROOT_DIR = "/dbfs/FileStore/meta/user/aistrate/software_entity_linking/"
+ROOT_DIR = "data/"
 
 def save_result_to_file(synonym_map, synonym_confidences, software_mentions_df, ID_start, ID_end):
   """
@@ -31,8 +31,8 @@ def save_result_to_file(synonym_map, synonym_confidences, software_mentions_df, 
   """
   for software, synonyms in synonym_map.items():
     synonyms_confs = synonym_confidences[software]
-    software_mentions_df.loc[software_mentions_df['software_mention'] == software, 'synonyms'] = synonyms
-    software_mentions_df.loc[software_mentions_df['software_mention'] == software, 'synonyms_confs'] = synonyms_confs
+    software_mentions_df.loc[software_mentions_df['software_mention'] == software, 'synonyms'] = str(synonyms)
+    software_mentions_df.loc[software_mentions_df['software_mention'] == software, 'synonyms_confs'] = str(synonyms_confs)
   software_mentions_df.to_csv(ROOT_DIR + 'synonym_string_similarity_' + str(ID_start) + "_" + str(ID_end) + '.csv')
   
 def save_result_to_file_spark(result, software_mentions_df, ID_start, ID_end):
