@@ -13,11 +13,12 @@ import pandas as pd
 import pickle
 import time
 import re
+import argparse
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 
-ROOT_DIR = "data/"
+ROOT_DIR = "data/disambiguated_files/"
 
 def generate_synonyms_keywords_extraction(packages, software_mentions, clue_words, pypi_cran_common, python = True):
   """
@@ -29,7 +30,7 @@ def generate_synonyms_keywords_extraction(packages, software_mentions, clue_word
   :param pypi_cran_common: list of mentions found in both PyPI and CRAN
   :param python: True if generating keywords for python packages
   
-  :return synonyms: mapping from {package : software_mention}
+  :return synonyms: mapping from {package : synonym}
   """
   # disregarding some common words from generating synonyms for, as these are likely to contain extra noise
   disregard_words = ['package', 'software', 'Library', 'studio', 'image', 'analysis', 'scripts', 'language'] + stopwords.words('english')
@@ -77,6 +78,8 @@ def get_pypi_synonyms(pypi_df, software_mentions, pypi_cran_common):
   :param pypi_df: df containing mentions found in the PyPI index
   :param software_mentions: full list of software mentions to generate synonyms from 
   :param pypi_cran_common: list of mentions found in both PyPI and CRAN
+
+  :return mapping from {pypi package : synonym}
   """
   print('- Generating Pypi synonyms ... ')
   clue_words = ['python', 'Python', 'API']
@@ -91,6 +94,8 @@ def get_bioconductor_synonyms(bioconductor_df, software_mentions, pypi_cran_comm
   :param pypi_df: df containing mentions found in the Bioconductor index
   :param software_mentions: full list of software mentions to generate synonyms from 
   :param pypi_cran_common: list of mentions found in both PyPI and CRAN
+
+  :return mapping from {bioconductor package : synonym}
   """
   print('- Generating Bioconductor synonyms ...')
   clue_words = ['R', 'r', 'package', 'Package', 'R-package', 'R-Package', 'r-package', 'bioconductor', 'Bioconductor']
@@ -105,6 +110,8 @@ def get_cran_synonyms(cran_df, software_mentions, pypi_cran_common):
   :param pypi_df: df containing mentions found in the CRAN index
   :param software_mentions: full list of software mentions to generate synonyms from 
   :param pypi_cran_common: list of mentions found in both PyPI and CRAN
+
+  :return mapping from {CRAN package : synonym}
   """  
   print('- Generating CRAN synonyms ...')
   clue_words = ['R', 'r', 'package', 'Package', 'R-package', 'R-Package', 'r-package']
@@ -119,7 +126,7 @@ if __name__ == '__main__':
   parser.add_argument('--pypi-file', type=str, default = ROOT_DIR + 'metadata_files/normalized/pypi_df.csv')
   parser.add_argument('--bioconductor-file', type=str, default = ROOT_DIR + 'metadata_files/normalized/bioconductor_df.csv')
   parser.add_argument('--mention2ID-file', type=str, default = ROOT_DIR + 'intermediate_files/mention2ID.pkl')
-  parser.add_argument('--output_dir', type=str, default = ROOT_DIR)
+  parser.add_argument('--output_dir', type=str, default = ROOT_DIR + 'intermediate_files')
 
   args, _ = parser.parse_known_args()
 
