@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
   pypi_synonyms = get_pypi_synonyms(pypi_df, all_software_mentions, pypi_cran_common)
   cran_synonyms = get_cran_synonyms(cran_df, all_software_mentions, pypi_cran_common)
-  bioconductor_synonyms = get_cran_synonyms(bioconductor_df, all_software_mentions, pypi_cran_common)
+  bioconductor_synonyms = get_bioconductor_synonyms(bioconductor_df, all_software_mentions, pypi_cran_common)
 
   pickle.dump(pypi_synonyms, open(args.output_dir + 'pypi_synonyms.pkl', 'wb+'))
   pickle.dump(cran_synonyms, open(args.output_dir + 'cran_synonyms.pkl', 'wb+'))

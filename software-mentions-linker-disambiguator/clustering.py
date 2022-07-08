@@ -3,7 +3,7 @@
 """Clusters plain text software mentions using DBSCAN or HDBSCAN
 
 Usage:
-    python clustering.py --input-file <input_file> --generate-new
+    python clustering.py --input-file <input_file>
 
 Details:
     Builds a similarity matrix based on synonym data.
