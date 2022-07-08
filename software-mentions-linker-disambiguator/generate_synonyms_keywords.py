@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+
+"""Generates synonyms for mentions in PyPI, CRAN and Bioconductor based on keywords
+
+Usage:
+    python generate_synonyms_keywords.py --input-file <input_file>
+
+Author:
+    Ana-Maria Istrate
+"""
+
 import pandas as pd
 import pickle
 import time
