@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Clusters plain text software mentions using DBSCAN
+"""Clusters plain text software mentions using DBSCAN or HDBSCAN
 
 Usage:
     python clustering.py --input-file <input_file> --generate-new
@@ -265,7 +265,7 @@ def get_mention2cluster(all_clusters):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
 
-  parser.add_argument('--synonyms-file', type=str, default = ROOT_DIR + 'exploded_df.csv')
+  parser.add_argument('--synonyms-file', type=str, default = ROOT_DIR + 'synonyms.csv')
   parser.add_argument('--disambiguated-file', type=str, default = ROOT_DIR + 'synonyms_disambiguated.tsv')
   parser.add_argument('--freq_dict', type=str, default = ROOT_DIR + 'freq_dict.pkl')
   parser.add_argument('--input_file', type=str, default = ROOT_DIR + 'comm_IDs.tsv')
@@ -275,6 +275,7 @@ if __name__ == '__main__':
 
   synonyms_df = pd.read_csv(args.synonyms_file)
   freq_dict = pickle.load(open(args.freq_dict, 'rb'))
+  # sample mentions for sanity checking
   sample_mentions = ['LIMMA', 'limma', 'Limma R package', 'Python', 'SciPy', 'scipy', 'stats', 'scikit-learn', 'sklearn', 'matplotlib', 'plotly', 'pandas', 'numpy', 'IMAGER', 'ImageJ', 'Image J', 'NIH ImageJ', 'ImageJ2', 'Fiji', 'NeuronJ', 'NeuronJ ImageJ', 'neuron', 'NEURON', 'BoneJ', 'SimPlot', 'Jupyter Notebook', 'Jupyter', 'iPython', 'iPython Notebook', 'ArcGIS', 'Stata', 'SAS', 'Affymetrix', 'Ringo', 'edgeR', 'Keras', 'CNN', 'AlexNet', 'ResNet', 'pytorch', 'DBSCAN', 'SPSS', 'SPSS®', 'BLAST', 'R Core Team', 'DAVID', 'GEPIA', 'GSEA', 'ggplot2', 'gplots', 'SVA', 'sva', 'SHELXTL', 'Stata', 'SAS', 'seqc', 'MAFFT', 'ClustalX', 'affy', 'glmer', 'Berkeley Madonna', 'Basic Local Alignment Search Tool (BLAST)', '(Basic Local Alignment Search Tool', 'MATLAB', 'DESeq2', 'codelink', 'beadarray', 'Lumi', 'car', 'Minimac', 'minimap2', 'Minim', 'statsmodels', 'seaborn', 'clusterProfiler', 'Chicago', 'ReactomeGSA', 'ReactomePA', 'Analysis', 'FASTX-Toolkit', 'FASTQC', 'GSVA', 'GOseq R package']
 
   dbscan_eps = 0.1
