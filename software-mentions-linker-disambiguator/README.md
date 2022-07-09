@@ -135,7 +135,7 @@ At the end of this step, you should have:
 Once the individual metadata files are computed, aggregate them together by running: 
 
 ```
-python generate_metadata_files.py
+python generate_metadata_file.py
 ```
 This step also does some post-processing of the individual metadata files. 
 
