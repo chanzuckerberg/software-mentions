@@ -16,7 +16,7 @@ ROOT_DIR_METADATA_NORMALIZED = 'metadata_files/normalized/'
 ROOT_DIR_INPUT_FILES = 'input_files/'
 ROOT_DIR_OUTPUT_FILES = 'output_files/'
 ROOT_DIR_INTERMEDIATE_FILES = 'intermediate_files/'
-ROOT_DIR_DISAMBIGUATION = 'disambiguated_files/'
+ROOT_DIR_DISAMBIGUATION = 'disambiguation_files/'
 ROOT_DIR_CURATION = 'curation/'
 
 
@@ -30,9 +30,10 @@ if __name__ == '__main__':
 	if not os.path.exists(parent_dir):
 		os.mkdir(parent_dir)
 	
-	create_dir(parent_dir, ROOT_DIR_METADATA_RAW)
-	create_dir(parent_dir, ROOT_DIR_METADATA_NORMALIZED)
-	create_dir(parent_dir, ROOT_DIR_INPUT_FILES)
-	create_dir(parent_dir, ROOT_DIR_OUTPUT_FILES)
-	create_dir(parent_dir, ROOT_DIR_INTERMEDIATE_FILES)
-	create_dir(parent_dir, ROOT_DIR_CURATION)
+	# create_dir(parent_dir, ROOT_DIR_METADATA_RAW)
+	# create_dir(parent_dir, ROOT_DIR_METADATA_NORMALIZED)
+	# create_dir(parent_dir, ROOT_DIR_INPUT_FILES)
+	# create_dir(parent_dir, ROOT_DIR_OUTPUT_FILES)
+	# create_dir(parent_dir, ROOT_DIR_INTERMEDIATE_FILES)
+	create_dir(parent_dir, ROOT_DIR_DISAMBIGUATION)
+	# create_dir(parent_dir, ROOT_DIR_CURATION)

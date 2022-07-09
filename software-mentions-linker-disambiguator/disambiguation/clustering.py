@@ -272,7 +272,7 @@ if __name__ == '__main__':
   parser.add_argument('--synonyms-file', type=str, default = ROOT_DIR + 'disambiguated_files/synonyms.csv')
   parser.add_argument('--output-disambiguated-file', type=str, default = ROOT_DIR + 'output_files/mentions_disambiguated.tsv')
   parser.add_argument('--freq_dict', type=str, default = ROOT_DIR + 'intermediate_files/freq_dict.pkl')
-  parser.add_argument('--input_file', type=str, default = ROOT_DIR + 'input_files/comm_IDs.tsv')
+  parser.add_argument('--input_file', type=str, default = ROOT_DIR + 'input_files/comm_IDs.tsv.gz')
   parser.add_argument('--output_file', type=str, default = ROOT_DIR + 'output_files/comm_IDs_disambiguated.tsv')
 
   args, _ = parser.parse_known_args()

@@ -146,7 +146,7 @@ def get_github_df(software_mentions, filename = None, save_new = True):
 # Usage: python github_linker.py --generate-new
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='Searching Github database ...')
-  parser.add_argument("--input-file", help="Input file", default = 'pmc_oa_nov_22.tsv', required = False)
+  parser.add_argument("--input-file", help="Input file", default = 'comm_IDs.tsv.gz', required = False)
   parser.add_argument("--output-file", help="Output file", default = "github_df.csv", required = False)
   parser.add_argument("--raw-filename", help="Raw Output file", default = "github_raw_df.csv", required = False)
   parser.add_argument("--min-freq", help="Minimum Mention Frequency", type = int, default = FREQ_THRESHOLD, required = False)

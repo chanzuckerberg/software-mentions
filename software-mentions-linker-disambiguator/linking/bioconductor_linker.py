@@ -108,7 +108,7 @@ def get_bioconductor_df(software_mentions, filename = None, save_new = True):
 # Usage: python bioconductor_linker.py --generate-new
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='Searching Bioconductor index...')
-  parser.add_argument("--input-file", help="Input file", default = 'pmc_oa_nov_22.tsv', required = False)
+  parser.add_argument("--input-file", help="Input file", default = 'comm_IDs.tsv.gz', required = False)
   parser.add_argument("--output-file", help="Output file", default = "bioconductor_df.csv", required = False)
   parser.add_argument("--raw-filename", help="Raw Output file", default = "bioconductor_raw_df.csv", required = False)
   parser.add_argument("--min-freq", help="Minimum Mention Frequency", type = int, default = FREQ_THRESHOLD, required = False)
