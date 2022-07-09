@@ -1,24 +1,28 @@
 # Software Mentions Linking + Disambiguation
 
-## Overall Project Description ##
-**Goal**: Produce a high quality dataset of software used in the biomedical literature to facilitate analysis of adoption and impact of open-source scientific software.
-We are achieving this by:
-1. Extracting plain-text software mentions from the PMC-OA access using the NER Machine Learning Algorithm described at [https://github.com/chanzuckerberg/software-mention-extraction](here), developed by Ivana Williams
-2. Linking the software mentions to repositories (eg Github) and generating metadata by querying a number of databases (pypi, Bioconductor, CRAN, Scicrunch, libraries.io API)
-3. Disambiguating the software mentions by using string-similarity algorithms
-4. Analyzing the output
+The goal of this project is to produce a high quality dataset of software used in the biomedical literature to facilitate analysis of adoption and impact of open-source scientific software. Our overall methodology is the following:
+1. Extract plain-text software mentions from the PMC-OA access using an [NER Machine Learning Algorithm](https://github.com/chanzuckerberg/software-mention-extraction) (developed by Ivana Williams)
+2. Link the software mentions to repositories and generate metadata by querying a number of databases. We link mentions to: PyPI, Bioconductor, CRAN, Scicrunch and Github
+3. Disambiguate the software mentions
 
-More detailed descriptions of each step are below. Instructions on how to run the files are under **How to run the code**.
+More detailed descriptions of the **[linking](#linking)** and **[disambiguation](#disambiguation)** steps can be found below, together with instructions on how to run the code.
  
-### Linking ###
-1. We are querying a number of databases, searching for the plain text sofware mentions. We are querying the following:
+# Linking #
+- [Description](#linking-task-description)
+- [Instructions on how to run the code](#how-to-run-the-linking-code)
+- [Evaluation](#linking-evaluation)
+
+## Linking Task description ##
+1. We query the following databases, searching for exact matches for plain text sofware mentions in our dataset:
 - pypi Index: https://pypi.org/simple/
 - Bioconductor Index: https://www.bioconductor.org/packages/release/bioc/
 - CRAN Index: https://cran.r-project.org/web/packages/available_packages_by_name.html
 - Github API: https://github.com
 - Scicrunch API: https://scicrunch.org/resources
 
-2. We are then normalizing the schemas to the following fields:
+2. We normalize the metadata files to a [common schema](#linking-schema).
+### Linking Schema
+Metadata files are normalized to the following fields:
 
 |Field| Description |
 | --- | --- |
@@ -48,22 +52,40 @@ More detailed descriptions of each step are below. Instructions on how to run th
 | keywords | keywords for software_mention, retrieved from Scicrunch|
 | scicrunch_synonyms | ynonyms for software_mention, retrieved from Scicrunch|
 
+## How to run the Linking code ##
+All the scripts for linking are under the `linker` folder. Here are the instructions for running the code from scratch. 
 
-### Disambiguation ###
+### Step 1: Setup
 
-## How to run the code ##
-
-**1. Adding the necessary folders and data** <BR>
-This will add a data folder structure.
+#### 1. Add the necessary folders and data <br> 
+- This step will add a data folder structure.
 ```
 python initialize.py
 ```
- 
-Download the input data from the [AWS S3 bucket here](https://s3.console.aws.amazon.com/s3/buckets/software-entity-linking-proj?region=us-west-2&prefix=extracted/) into the `data/input_files` folder. 
- 
-**2. Generate keys for Accessing the APIs** <br>
 
-Many scripts in this bundle require access keys.  You can get them for free from
+- Download the input data from the [Dryad Link here](https://s3.console.aws.amazon.com/s3/buckets/software-entity-linking-proj?region=us-west-2&prefix=extracted/). Add the input software_mentions file (e.g. `comm_IDs.tsv`) into the `data/input_files` folder. Do not unzip the file. The scripts assume a .gz extension. 
+
+#### 2. Assign IDs for software mentions <br>
+This step will assign IDs to software mentions in the input file. It will also generate a mention2ID.pkl file which contains mappings from mention to an ID.
+```
+python assign_IDs.py --input-file (your_input_file) --output-file (your_output_file)
+```
+**Example**: ```python assign_IDs.py --input-file comm.tsv --output-file comm_IDs.tsv``` <br>
+Note: the script assumes that input_file is under ```data/input_files```. 
+
+At the end of this step, you should have: 
+-  `mention2ID.pkl` file under the `data/intermediate_files` 
+- `comm_IDs.tsv` file under `data/input_files`
+
+<hr>
+
+### Step 2: Query databases
+This step will link software mentions to the PyPI, CRAN, Bioconductor, Scicrunch and Github repositories. <br>
+Here are the instructions if you would like to compute the metadata files from scratch:
+
+**1. Generate keys for Accessing the APIs** <br>
+
+You will need to have a number of access keys.  You can get them for free from
 [https://libraries.io](https://libraries.io), [https://github.com](https://github.com), [https://sparc.science](https://sparc.science).  Then create a file keys with the following content:
 
     export GITHUB_USER = ...
@@ -72,29 +94,195 @@ Many scripts in this bundle require access keys.  You can get them for free from
 
 Source this file as `. keys` or `source keys`
 
-**3. Generate IDs for software mentions** <br>
-```
-python assign_IDs.py --input-file (your_input_file) --output-file (your_output_file)
-```
+**2. Generate Metadata files** <br>
+Generate metadata files from scratch. <br>
+Each of the commands below queries the specific database for linking and generating metadata for the software mentions. <br>
+There are a number of command-line parameters that can be tuned, more info in the scripts themselves. <br>
+Metadata files are normalized to a [common schema](#linking-schema) and saved under `data/metadata_files/normalized`. Raw versions are also saved under `data/metadata_files/raw`.
 
-**Example**: ```python assign_IDs.py --input-file comm.tsv --output-file comm_IDs.tsv``` <br><br>
-Note: the script assumes that input_file is under ```data/input_files```. This will save the output_file under the same directory. 
-
-**4. Generate Metadata files** <br>
-Each of the commands below queries the specific database for linking and generating metadata for the software mentions. 
-There are a number of command-line parameters that can be tuned, more info in the scripts themselves. 
+Note that these scripts can take a long time to run, especially given the large number of mentions in the dataset. In particular, the Github API requests are subjected to a limit/per minute. We recommend parallelizing or using distributed computing. We used a Spark environment to speed up the process. 
 
 ```
-python bioconductor_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
-python cran_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
-python pypi_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
-python github_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
-python scicrunch_linker.py --input-file comm_IDs.tsv --min-freq=1 --generate-new
+python bioconductor_linker.py --input-file comm_IDs.tsv --generate-new
+python cran_linker.py --input-file comm_IDs.tsv --generate-new
+python pypi_linker.py --input-file comm_IDs.tsv --generate-new
+python github_linker.py --input-file comm_IDs.tsv --generate-new
+python scicrunch_linker.py --input-file comm_IDs.tsv --generate-new
 ```
-
-These files will save the output under ```data/metadata_files```. There will be a raw output saved under ```data/metadata_files/raw``` and a normalized output saved under ```data/metadata_files/normalized```.
  
  **Sanity-checking**
  To make sure that everything works the way it should, you could sanity check the code by running something like: <br>
 ```python bioconductor_linker.py --input-file comm_IDs.tsv --top-k 40``` <br>
 This will only try to link the first 40 mentions, for instance, and should take a fairly short time (minutes). Of course, you can do this for any of the metadata linking scripts.
+
+At the end of this step, you should have: 
+- **raw metadata files** saved under the `data/metadata_files/raw` directory. 
+  - ```pypi_raw_df.csv```
+  - ```cran_raw_df.csv```
+  - ```bioconductor_raw_df.csv```
+  - ```scicrunch_raw_df.csv```
+  - ```github_raw_df.csv```
+- **normalized files** (to a [common schema](#linking-schema)) saved under the saved under `data/metadata_files/normalized`.  
+  - ```pypi_df.csv```
+  - ```cran_df.csv```
+  - ```bioconductor_df.csv```
+  - ```scicrunch_df.csv```
+  - ```github_df.csv```
+
+<hr> 
+
+### Step 3. Create master metadata_file <br> 
+Once the individual metadata files are computed, aggregate them together by running: 
+
+```
+python generate_metadata_files.py
+```
+This step also does some post-processing of the individual metadata files. 
+
+At the end of this step, you should have:
+- `metadata.csv` saved under the `data/output_files/` directory
+
+<hr>
+
+## Linking evaluation ##
+We evaluate the linking algorithm using an expert team of biomedical curators. We ask them to evaluate 50 generated **software-generated** link pairs as one of: correct, incorrect or unclear. <br>
+The evaluation file is available as `evaluation_linking.csv` and the script to compute the metrics is `evaluation_linking.py`.
+To get the evaluation metrics, run the evaluation script inside the `evaluation` folder:
+
+```
+python evaluation_linking.py --linking-evaluation-file `../data/curation/evaluation_linking.csv`
+```
+
+# Disambiguation #
+- [Description](#disambiguation-task-description)
+- [Instructions on how to run the code](#how-to-run-the-disambiguation-code)
+- [Evaluation](#disambiguation-evaluation)
+
+## Disambiguation Task description ##
+For the disambiguation task, we use the following methodology: <br>
+
+**1. Synonym Generation**: we generate synonyms for mentions in our corpus through:
+1. Keywords-based synonym generation
+2. Scicrunch synonyms retrieval
+3. String similarity (Jaro Winkler) algorithms <br>
+
+**2. Similarity matrix generation**: based on synonyms generated in the previous step, we build a similarity matrix <br>
+
+**3. Cluster Generation**
+1. We retrieve the connected components through the similarity matrix
+2. For each connected component, we compute its distance matrix based on its similarity matrix
+3. We cluster a number of connected components by feeding the corresponding distance matrices into the DBSCAN algorithm
+4. We assign each cluster's name to the mention with the highest frequency in our corpus.
+
+## How to run the disambiguation code ##
+All the scripts for linking are under the `linker` folder. Here are the instructions for running the code from scratch. 
+
+### Step 1: Setup
+- Follow the steps under **Linking Setup** if you haven't already. In particular, steps in this section require that you generate or retrieve `mention2ID.pkl` if you haven't already in a previous step. 
+-  Generate a frequency dictionary `freq_dict.pkl` containing mappings from {synonym : frequency} by running:  
+```
+python generate_freq_dict.py --input-file ../data/input_files/comm_IDs.tsv --output-file ../data/intermediate_files/freq_dict.pkl
+```
+This file will be later used in clustering.
+
+At the end of this step, you should have:
+- `mention2ID.pkl` 
+- `freq_dict.pkl` 
+
+<hr>
+
+### Step 2: Synonym Generation
+Generate synonym files by:
+
+#### 1. Generate keywords-based synonyms
+
+```
+python generate_synonyms_keywords.py
+``` 
+
+This step assumes that `cran_df.csv`, `pypi_df.csv`, `bioconductor_df.csv` files exist under `data/metadata_files/normalized` and the `mention2ID.pkl` file exists under `data/intermediate_files 
+
+At the end of this step, you should have:
+- `pypi_synonyms.pkl`
+- `cran_synonyms.pkl`
+- `bioconductor_synoynms.pkl`
+
+#### 2. Generate Scicrunch-based synonyms: 
+
+ ```
+ python generate_synonyms_scicrunch.py
+ ```
+ 
+This step assumes that `scicrunch_df.csv` file exists under `data/metadata_files/normalized`
+
+At the end of this step, you should have:
+- `scicrunch_synoynms.pkl`
+- `extra_scicrunch_synonyms.pkl`
+
+#### 3. Generate string similarity synonyms: 
+
+```
+python generate_synonyms_string_similarity.py
+```
+
+This step assumes that `mention2ID.pkl` file exists under `data/intermediate_files`.
+This step could be time consuming, so we recommend running in batches. You have the option of choosing an **ID_start** as well as an **ID_end**, and a Spark implementation is also available. 
+
+```
+python generate_synonyms_string_similarity.py --ID_start 0 --ID_start 100
+``` 
+The start/end IDs refer to the software mention IDs in `mention2ID.pkl`
+
+After all the batched files are generated, combine all of them in one master file by running:
+```
+python generate_string_sim_dict.py
+```
+This will generate a `string_similarity_dict.pkl`
+
+At the end of this step, you should have:
+- `string_similarity_dict.pkl`
+
+<hr>
+
+### Step 3: Combine synonyms from all sources
+This step combines all synonyms files into a master file and does some post-processing. <br>
+Assumes that the following files have already been generated:
+- `pypi_synonyms.pkl`
+- `cran_synonyms.pkl`
+- `bioconductor_synoynms.pkl`
+- `scicrunch_synoynms.pkl`
+- `extra_scicrunch_synonyms.pkl`
+- `string_similarity_dict.pkl`
+- `mention2ID.pkl`
+
+```
+python combine_all_synonyms.py
+```
+
+At the end of this step, you should have:
+- `synonyms.csv` file under `data/disambiguation`
+
+<hr>
+
+### Step 4: Cluster generation
+This step involves computing the similarity matrix and clustering the mentions. <br>
+Note that this step assumes that the `synoynms.csv` file is already computed and contains similarity scores between pairs of strings. <br>
+A frequency dictionary `freq_dict.pkl` is also required to be able to run the clustering algorithm and assign the cluster name to the mention with highest frequency in the corpus. If you don't have this generated, create it using the steps under [Setup](### Step 1: Setup)
+
+```
+python clustering.py --synonyms-file <synonyms_file>
+```
+```
+python clustering.py --synonyms-file ../data/disambiguation_files/synonyms.csv
+```
+## Disambiguation Evaluation ##
+We evaluate the disambiguation algorithm using an expert team of biomedical curators. We ask them to evaluate 5885 generated **software-synonym** pairs as one of: Exact, Narrow, Unclear, Not Synonym. <br>
+The evaluation file is available as `evaluation_disambiguation.csv` and the script to compute the metrics is `evaluation_disambiguation.py`.
+To get the evaluation metrics, run the evaluation script inside the `evaluation` folder:
+
+```
+python evaluation_disambiguation.py --linking-evaluation-file `../data/curation/evaluation_disambiguation.csv`
+```
+
+# Notes #
+- most scripts assume software mentions files (e.g. comm.tsv, comm_IDs.tsv) are in the format comm.tsv.gz or comm_IDs.tsv.gz and handle them accordingly
