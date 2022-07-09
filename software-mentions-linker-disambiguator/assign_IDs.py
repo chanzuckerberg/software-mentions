@@ -8,15 +8,21 @@ Author:
     Ana-Maria Istrate
 """
 
-from utils_linker import *
+import argparse
+import pandas as pd
+import pickle
+
+ROOT_DIR_INTERMEDIATE_FILES = 'data/intermediate_files/'
+ROOT_DIR_INPUT_FILES = 'data/input_files/'
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Searching Bioconductor index...')
-	parser.add_argument("--input-file", help="Input file", default = 'comm_IDs.tsv', required = False)
-	parser.add_argument("--output-file", help="Input file", default = 'comm_IDs.tsv', required = False)
+	parser.add_argument("--input-file", help="Input file", default = 'comm.tsv', required = False)
+	parser.add_argument("--output-file", help="Output file", default = 'comm_IDs.tsv', required = False)
 	args = parser.parse_args()
 	print(args)
-	mentions_df = pd.read_csv(ROOT_DIR_INPUT_FILES + args.input_file, sep='\\t', engine='python', compression = 'gzip')
+	mentions_df = pd.read_csv(ROOT_DIR_INPUT_FILES + args.input_file, sep='\t', engine='python', compression = 'gzip')
 	software_mentions = mentions_df['software'].unique()
 	print('- Finished reading', args.input_file)
 	map_filename = ROOT_DIR_INTERMEDIATE_FILES + 'mention2ID.pkl'
@@ -28,4 +34,4 @@ if __name__ == '__main__':
 	print('- Generated mappings for', len(mention2ID), 'software mentions') 
 
 	mentions_df['ID'] = mentions_df['software'].apply(lambda x: mention2ID[x])
-	mentions_df.to_csv(ROOT_DIR_INPUT_FILES + args.output_file, sep="\t", index = False)
+	mentions_df.to_csv(ROOT_DIR_INPUT_FILES + args.output_file, sep="\t", index = False, compression = 'gzip')
