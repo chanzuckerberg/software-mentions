@@ -53,7 +53,7 @@ Metadata files are normalized to the following fields:
 | scicrunch_synonyms | ynonyms for software_mention, retrieved from Scicrunch|
 
 ## How to run the Linking code ##
-Here are the instructions for running the linking code from scratch. 
+All the scripts for linking are under the `linker` folder. Here are the instructions for running the code from scratch. 
 
 ### Step 1: Setup
 
@@ -63,7 +63,7 @@ Here are the instructions for running the linking code from scratch.
 python initialize.py
 ```
 
-- Download the input data from the [Dryad Link here](https://s3.console.aws.amazon.com/s3/buckets/software-entity-linking-proj?region=us-west-2&prefix=extracted/). Add the input software_mentions file (e.g. `comm_IDs.tsv`) into the `data/input_files` folder. 
+- Download the input data from the [Dryad Link here](https://s3.console.aws.amazon.com/s3/buckets/software-entity-linking-proj?region=us-west-2&prefix=extracted/). Add the input software_mentions file (e.g. `comm_IDs.tsv`) into the `data/input_files` folder. Do not unzip the file. The scripts assume a .gz extension. 
 
 #### 2. Assign IDs for software mentions <br>
 This step will assign IDs to software mentions in the input file. It will also generate a mention2ID.pkl file which contains mappings from mention to an ID.
@@ -116,13 +116,13 @@ python scicrunch_linker.py --input-file comm_IDs.tsv --generate-new
 This will only try to link the first 40 mentions, for instance, and should take a fairly short time (minutes). Of course, you can do this for any of the metadata linking scripts.
 
 At the end of this step, you should have: 
-- **raw metadata files** saved under the `data/metadata_files/raw` directory. These are raw metadata files. 
+- **raw metadata files** saved under the `data/metadata_files/raw` directory. 
   - ```pypi_raw_df.csv```
   - ```cran_raw_df.csv```
   - ```bioconductor_raw_df.csv```
   - ```scicrunch_raw_df.csv```
   - ```github_raw_df.csv```
-- **normalized files** saved under the saved under `data/metadata_files/normalized`. These are metadata files normalized to a common schema. 
+- **normalized files** (to a [common schema](#linking-schema)) saved under the saved under `data/metadata_files/normalized`.  
   - ```pypi_df.csv```
   - ```cran_df.csv```
   - ```bioconductor_df.csv```
@@ -135,22 +135,22 @@ At the end of this step, you should have:
 Once the individual metadata files are computed, aggregate them together by running: 
 
 ```
-python generate_metadata_files.py --output-file (your_output_file)
+python generate_metadata_files.py
 ```
 This step also does some post-processing of the individual metadata files. 
 
 At the end of this step, you should have:
-- `metadata.csv` saved under the `data/metadata_files/` directory
+- `metadata.csv` saved under the `data/output_files/` directory
 
 <hr>
 
 ## Linking evaluation ##
 We evaluate the linking algorithm using an expert team of biomedical curators. We ask them to evaluate 50 generated **software-generated** link pairs as one of: correct, incorrect or unclear. <br>
 The evaluation file is available as `evaluation_linking.csv` and the script to compute the metrics is `evaluation_linking.py`.
-To run the evaluation script:
+To get the evaluation metrics, run the evaluation script inside the `evaluation` folder:
 
 ```
-python evaluation_linking --linking-evaluation-file `data/evaluation_linking.csv`
+python evaluation_linking.py --linking-evaluation-file `../data/curation/evaluation_linking.csv`
 ```
 
 # Disambiguation #
@@ -175,13 +175,13 @@ For the disambiguation task, we use the following methodology: <br>
 4. We assign each cluster's name to the mention with the highest frequency in our corpus.
 
 ## How to run the disambiguation code ##
-Here are the instructions for running the disambiguation code from scratch. 
+All the scripts for linking are under the `linker` folder. Here are the instructions for running the code from scratch. 
 
 ### Step 1: Setup
 - Follow the steps under **Linking Setup** if you haven't already. In particular, steps in this section require that you generate or retrieve `mention2ID.pkl` if you haven't already in a previous step. 
 -  Generate a frequency dictionary `freq_dict.pkl` containing mappings from {synonym : frequency} by running:  
 ```
-python generate_freq_dict.py --input-file <input_file>
+python generate_freq_dict.py --input-file ../data/input_files/comm_IDs.tsv --output-file ../data/intermediate_files/freq_dict.pkl
 ```
 This file will be later used in clustering.
 
@@ -197,7 +197,7 @@ Generate synonym files by:
 #### 1. Generate keywords-based synonyms
 
 ```
-python generate_synonyms_keywords.p
+python generate_synonyms_keywords.py
 ``` 
 
 This step assumes that `cran_df.csv`, `pypi_df.csv`, `bioconductor_df.csv` files exist under `data/metadata_files/normalized` and the `mention2ID.pkl` file exists under `data/intermediate_files 
@@ -228,11 +228,15 @@ python generate_synonyms_string_similarity.py
 This step assumes that `mention2ID.pkl` file exists under `data/intermediate_files`.
 This step could be time consuming, so we recommend running in batches. You have the option of choosing an **ID_start** as well as an **ID_end**, and a Spark implementation is also available. 
 
-`python generate_synonyms_string_similarity.py ID_start 0 ID_start 10000` 
+```
+python generate_synonyms_string_similarity.py --ID_start 0 --ID_start 100
+``` 
 The start/end IDs refer to the software mention IDs in `mention2ID.pkl`
 
 After all the batched files are generated, combine all of them in one master file by running:
-`python generate_string_sim_dict.py`
+```
+python generate_string_sim_dict.py
+```
 This will generate a `string_similarity_dict.pkl`
 
 At the end of this step, you should have:
@@ -268,12 +272,17 @@ A frequency dictionary `freq_dict.pkl` is also required to be able to run the cl
 ```
 python clustering.py --synonyms-file <synonyms_file>
 ```
-
+```
+python clustering.py --synonyms-file ../data/disambiguation_files/synonyms.csv
+```
 ## Disambiguation Evaluation ##
 We evaluate the disambiguation algorithm using an expert team of biomedical curators. We ask them to evaluate 5885 generated **software-synonym** pairs as one of: Exact, Narrow, Unclear, Not Synonym. <br>
 The evaluation file is available as `evaluation_disambiguation.csv` and the script to compute the metrics is `evaluation_disambiguation.py`.
-To run the evaluation script:
+To get the evaluation metrics, run the evaluation script inside the `evaluation` folder:
 
 ```
-python evaluation_disambiguation --disambiguation-evaluation-file `data/evaluation_disambiguation.csv`
+python evaluation_disambiguation.py --linking-evaluation-file `../data/curation/evaluation_disambiguation.csv`
 ```
+
+# Notes #
+- most scripts assume software mentions files (e.g. comm.tsv, comm_IDs.tsv) are in the format comm.tsv.gz or comm_IDs.tsv.gz and handle them accordingly
