@@ -70,7 +70,7 @@ This step will assign IDs to software mentions in the input file. It will also g
 ```
 python assign_IDs.py --input-file (your_input_file) --output-file (your_output_file)
 ```
-**Example**: ```python assign_IDs.py --input-file comm.tsv --output-file comm_IDs.tsv``` <br>
+**Example**: ```python assign_IDs.py --input-file comm.tsv.gz --output-file comm_IDs.tsv.gz``` <br>
 Note: the script assumes that input_file is under ```data/input_files```. 
 
 At the end of this step, you should have: 
@@ -103,11 +103,11 @@ Metadata files are normalized to a [common schema](#linking-schema) and saved un
 Note that these scripts can take a long time to run, especially given the large number of mentions in the dataset. In particular, the Github API requests are subjected to a limit/per minute. We recommend parallelizing or using distributed computing. We used a Spark environment to speed up the process. 
 
 ```
-python bioconductor_linker.py --input-file comm_IDs.tsv --generate-new
-python cran_linker.py --input-file comm_IDs.tsv --generate-new
-python pypi_linker.py --input-file comm_IDs.tsv --generate-new
-python github_linker.py --input-file comm_IDs.tsv --generate-new
-python scicrunch_linker.py --input-file comm_IDs.tsv --generate-new
+python bioconductor_linker.py --input-file comm_IDs.tsv.gz --generate-new
+python cran_linker.py --input-file comm_IDs.tsv.gz --generate-new
+python pypi_linker.py --input-file comm_IDs.tsv.gz --generate-new
+python github_linker.py --input-file comm_IDs.tsv.gz --generate-new
+python scicrunch_linker.py --input-file comm_IDs.tsv.gz --generate-new
 ```
  
  **Sanity-checking**
@@ -285,4 +285,5 @@ python evaluation_disambiguation.py --linking-evaluation-file `../data/curation/
 ```
 
 # Notes #
-- most scripts assume software mentions files (e.g. comm.tsv, comm_IDs.tsv) are in the format comm.tsv.gz or comm_IDs.tsv.gz and handle them accordingly
+- most scripts assume software mentions files (e.g. comm.tsv, comm_IDs.tsv) are in the format comm.tsv.gz or comm_IDs.tsv.gz 
+- each script has a number of command line arguments parameters that can be passed on; more info is available inside each file
