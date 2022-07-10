@@ -77,6 +77,20 @@ At the end of this step, you should have:
 -  `mention2ID.pkl` file under the `data/intermediate_files` 
 - `comm_IDs.tsv` file under `data/input_files`
 
+#### 3. Filter comm_IDs.tsv.gz to exclude non-software mentions <br>
+This step will filter the `comm_IDs.tsv.gz` to exclude mentions that are marked as not-software by our expert bio-curation team. <br>
+The curated list of terms to be excluded is under `data/curation/curation_top10k_mentions_binary_labels.csv`.
+
+```
+python filter_curated_terms.py --input-file (your_input_file) --output-curated-dataset (your_output_file)
+```
+**Example**: ```python filter_curated_terms.py --input-file comm_IDs.tsv.gz --output-curated-dataset comm_curated.tsv.gz``` <br>
+
+At the end of this step, you should have: 
+- `comm_curated.tsv.gz` file under the `data/input_files` - `comm_IDs` with mentions marked as non-software filtered out
+- `comm_with_labels.tsv.gz` file under `data/input_files` - `comm_IDs` with an additional field corresponding to the software mention label (eg 'software', 'not-software', 'unclear', or 'not curated') to mark that the mention has not been curated
+
+
 <hr>
 
 ### Step 2: Query databases
