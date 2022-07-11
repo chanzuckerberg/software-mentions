@@ -30,26 +30,17 @@ Metadata files are normalized to the following fields:
 | software_mention | plain-text software mention |
 | mapped_to | value the software_mention is being mapped to |
 | source | source of the mapping - eg Bioconductor Index, Github API|
-| platform | platform of software_mention - eg npm, pypi, CRAN |
+| platform | platform of software_mention - eg pypi, CRAN |
 | package_url | URL linking software_mention to source |
 | description | description of software_mention |
 | homepage_url | homepage_url of software_mention|
 | other_urls |other related URLs |
-| language | programming_language of software_mention|
 | license | software license |
 | github_repo | Github repository |
 | github_repo_license | Github repository license |
 | exact_match | whether or not this mapping was an exact match |
 | RRID | RRID for software_mention |
-| alternate_RRIDs | other RRIDs for software_mention |
 | reference | journal articles linked to software_mention (identified either through DOI, pmid or RRID)|
-| parent_org | parent organization for software_mention, retrieved from Scicrunch |
-| parent_org_link | link for parent organization for software_mention, retrieved from Scicrunch |
-| related_condition | related condition for software_mention, retrieved from Scicrunch |
-| funding_agency | funding agency for software_mention, retrieved from Scicrunch|
-| relation | other entries software_mention is related to, retrieved from Scicrunch |
-| resource_type | type of resource for software_mention, retrieved from Scicrunch |
-| keywords | keywords for software_mention, retrieved from Scicrunch|
 | scicrunch_synonyms | ynonyms for software_mention, retrieved from Scicrunch|
 
 ## How to run the Linking code ##
