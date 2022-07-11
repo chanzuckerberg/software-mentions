@@ -66,16 +66,37 @@ python initialize.py
 - Download the input data from the [Dryad Link here](https://s3.console.aws.amazon.com/s3/buckets/software-entity-linking-proj?region=us-west-2&prefix=extracted/). Add the input software_mentions file (e.g. `comm_IDs.tsv`) into the `data/input_files` folder. Do not unzip the file. The scripts assume a .gz extension. 
 
 #### 2. Assign IDs for software mentions <br>
-This step will assign IDs to software mentions in the input file. It will also generate a mention2ID.pkl file which contains mappings from mention to an ID.
+This step will assign IDs to software mentions in the input file. It will also generate a mention2ID.pkl file which contains mappings from mention to an ID. It can generate this file from scratch or update an already existing `mention2ID` file. <br>
+
+Generate mention2ID from scratch: <br>
 ```
-python assign_IDs.py --input-file (your_input_file) --output-file (your_output_file)
+python assign_IDs.py --input-file (your_input_file) --mention2ID-file (your_output_file_for_mention2ID)
 ```
 **Example**: ```python assign_IDs.py --input-file comm.tsv.gz --output-file comm_IDs.tsv.gz``` <br>
 Note: the script assumes that input_file is under ```data/input_files```. 
 
+Update an already existing mention2ID file: <br>
+```
+python assign_IDs.py --input-file (your_input_file) --mention2ID-file (your_existing_file_for_mention2ID) --mention2ID-updated_file (your_updated_file_for_mention2ID) 
+```
+
 At the end of this step, you should have: 
 -  `mention2ID.pkl` file under the `data/intermediate_files` 
 - `comm_IDs.tsv` file under `data/input_files`
+
+#### 3. Filter comm_IDs.tsv.gz to exclude non-software mentions <br>
+This step will filter the `comm_IDs.tsv.gz` to exclude mentions that are marked as not-software by our expert bio-curation team. <br>
+The curated list of terms to be excluded is under `data/curation/curation_top10k_mentions_binary_labels.csv`.
+
+```
+python filter_curated_terms.py --input-file (your_input_file) --output-curated-dataset (your_output_file)
+```
+**Example**: ```python filter_curated_terms.py --input-file comm_IDs.tsv.gz --output-curated-dataset comm_curated.tsv.gz``` <br>
+
+At the end of this step, you should have: 
+- `comm_curated.tsv.gz` file under the `data/input_files` - `comm_IDs` with mentions marked as non-software filtered out
+- `comm_with_labels.tsv.gz` file under `data/input_files` - `comm_IDs` with an additional field corresponding to the software mention label (eg 'software', 'not-software', 'unclear', or 'not curated') to mark that the mention has not been curated
+
 
 <hr>
 
@@ -287,3 +308,8 @@ python evaluation_disambiguation.py --linking-evaluation-file `../data/curation/
 # Notes #
 - most scripts assume software mentions files (e.g. comm.tsv, comm_IDs.tsv) are in the format comm.tsv.gz or comm_IDs.tsv.gz 
 - each script has a number of command line arguments parameters that can be passed on; more info is available inside each file
+- You might get errors when trying to read the `publishers_collection` files with pandas. If using pandas, we recommend adding the `error_bad_lines` flag. This might incorrectly disregard a small number of lines.
+
+```
+publishers_collection_df = pd.read_csv('publishers_collections.tsv.gz', sep = '\\t', compression = 'gzip', engine = 'python', error_bad_lines = False)
+```
