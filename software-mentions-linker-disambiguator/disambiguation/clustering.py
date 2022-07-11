@@ -322,11 +322,11 @@ if __name__ == '__main__':
   mention2cluster = get_mention2cluster(predicted_clusters)
 
   cols_of_interest = [['ID', 'software_mention', 'synonym', 'synonym_conf', 'synonym_source', 'synonym_ID',  'mapped_to']]
-  synonyms_df['mapped_to'] = synonyms_df['software_mention'].apply(lambda x: mention2cluster[x] if x in mention2cluster else x)
+  synonyms_df['predicted_software_entity'] = synonyms_df['software_mention'].apply(lambda x: mention2cluster[x] if x in mention2cluster else x)
   synonyms_df.to_csv(args.output_disambiguated_file, index = False, sep = '\t')
   
   mentions_df = pd.read_csv(args.input_file, sep = '\\t', engine = 'python', compression = 'gzip')
-  mentions_df['mapped_to'] = synonyms_df['software_mention'].apply(lambda x: mention2cluster[x] if x in mention2cluster else x)
+  mentions_df['predicted_software_entity'] = synonyms_df['software_mention'].apply(lambda x: mention2cluster[x] if x in mention2cluster else x)
   mentions_df.to_csv(args.output_file, index = False, sep = '\t')
 
   print('Here are some examples of disambiguated mentions: ')
