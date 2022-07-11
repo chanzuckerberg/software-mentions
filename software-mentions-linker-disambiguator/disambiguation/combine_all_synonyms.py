@@ -209,4 +209,4 @@ if __name__ == '__main__':
   # synonyms_df = synonyms_df_high_conf[synonyms_df_high_conf['synonym_ID'] != -1]
   
   # Save to file
-  synonyms_df.to_csv(args.output_file)
+  synonyms_df.to_csv(args.output_file, index = False)

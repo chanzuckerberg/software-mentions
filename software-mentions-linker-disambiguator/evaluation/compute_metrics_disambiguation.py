@@ -30,14 +30,14 @@ if __name__ == '__main__':
   unclear = len(disambiguated_df[disambiguated_df[label_field].isin(['Unclear'])])
   incorrect = len(disambiguated_df[disambiguated_df[label_field].isin(['Not synonym'])])
   not_software = len(disambiguated_df[disambiguated_df[label_field].isin(['Not software'])])
-  num_total = correct + unclear + incorrect
+  num_total = correct + unclear + incorrect + not_software
   
   correct_perc = correct / num_total * 100
   unclear_perc = unclear / num_total * 100
   incorrect_perc = incorrect / num_total * 100
   not_software_perc = not_software / (num_total + not_software) * 100
   
-  print('Correct', correct_perc)
-  print('Incorrect', incorrect_perc)
-  print('Unclear', unclear_perc)
-  print('Not Software', not_software_perc)
+  print('Correct', correct, correct_perc)
+  print('Incorrect', incorrect, incorrect_perc)
+  print('Unclear', unclear, unclear_perc)
+  print('Not Software', not_software, not_software_perc)
