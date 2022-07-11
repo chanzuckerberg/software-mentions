@@ -41,7 +41,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Searching Bioconductor index...')
     parser.add_argument("--input-file", help="Input file", default = 'comm.tsv.gz', required = False)
     parser.add_argument("--output-file", help="Output file", default = 'comm_IDs.tsv.gz', required = False)
-    parser.add_argument("--update_mention2ID", help="True if mention2ID already exists and you want to assign new IDs", default = False, required = False)
+    parser.add_argument("--update_mention2ID", help="True if mention2ID already exists and you want to assign new IDs", default = False, required = False, action = 'store_true')
     parser.add_argument("--mention2ID-file", help="Location for mention2ID file.", default = ROOT_DIR_INTERMEDIATE_FILES + 'mention2ID.pkl', required = False)
     parser.add_argument("--mention2ID-updated-file", help="Location for updated mention2ID, if mention2ID already exists", default = ROOT_DIR_INTERMEDIATE_FILES + 'mention2ID_updated.pkl', required = False)
 
