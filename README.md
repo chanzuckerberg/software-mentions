@@ -13,6 +13,17 @@ Ivana Williams.
 
 Chan Zuckerberg Initiative, [https://chanzuckerberg.com](https://chanzuckerberg.com) 
 
+## Links
+
+Dataset: [https://doi.org/10.5061/dryad.6wwpzgn2c](https://doi.org/10.5061/dryad.6wwpzgn2c)
+
+Dataset and code description: [https://arxiv.org/abs/2209.00693](https://arxiv.org/abs/2209.00693)
+
+## Directories
+
+* [sample_notebooks](sample_notebooks) - sample notebooks for the usage of the dataset
+* [software-mentions-extractor](software-mentions-extractor) - the code for extracting mentions from OA PMC
+* [software-mentions-linker-disambiguator](software-mentions-linker-disambiguator) - the code for linking and disambiguation of software mentions
 
 
 ## Code of Conduct
