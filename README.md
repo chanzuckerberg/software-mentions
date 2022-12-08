@@ -19,6 +19,8 @@ Dataset: [https://doi.org/10.5061/dryad.6wwpzgn2c](https://doi.org/10.5061/dryad
 
 Dataset and code description: [https://arxiv.org/abs/2209.00693](https://arxiv.org/abs/2209.00693)
 
+SciBERT model: [https://github.com/chanzuckerberg/software-mention-extraction](https://github.com/chanzuckerberg/software-mention-extraction)
+
 ## Directories
 
 * [sample_notebooks](sample_notebooks) - sample notebooks for the usage of the dataset
