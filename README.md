@@ -27,7 +27,7 @@ Ivana Williams.
 
 * Dataset: [https://doi.org/10.5061/dryad.6wwpzgn2c](https://doi.org/10.5061/dryad.6wwpzgn2c) (CC0)
 * Preprint: [https://arxiv.org/abs/2209.00693](https://arxiv.org/abs/2209.00693) (CC BY)
-* SciBERT model: [https://github.com/chanzuckerberg/software-mention-extraction](https://github.com/chanzuckerberg/software-mention-extraction)
+* Software mention and version extraction model: [https://github.com/chanzuckerberg/software-mention-extraction](https://github.com/chanzuckerberg/software-mention-extraction)
 
 
 ## Code of Conduct
